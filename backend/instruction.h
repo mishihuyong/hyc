@@ -49,7 +49,7 @@ enum class InstructionType : int {
     MAX
 };
 
-struct Ir {
+struct IntermediateRepresentation {
     std::string label;
     InstructionType instruction;
     std::string argument;
@@ -63,17 +63,27 @@ struct Code {
         labelMap.clear();
         funcMap.clear();
     }
-    std::vector<Ir> irs;
+
+    void Print();
+    std::vector<IntermediateRepresentation> irs;
     std::map<std::string, var> labelMap;
     std::map<std::string, var> funcMap;
 };
 
-enum class StackItemType {
+enum class StackItemType : int {
     CONST,
     VAR,
     PARAM_SIZE,
     IP,
     VAR_MAP
+};
+
+inline std::map<StackItemType, const char* const> statckItemStrMap = {
+    { StackItemType::CONST, "CONST" },
+    { StackItemType::VAR, "VAR" },
+    { StackItemType::PARAM_SIZE, "PARM_SIZE" },
+    { StackItemType::IP, "IP" },
+    { StackItemType::VAR_MAP, "VAR_MAP" }
 };
 
 struct StackItem {
@@ -94,6 +104,8 @@ struct Cpu {
         stack.clear();
     }
 
+    void Print();
+
     std::map<std::string, var>* varMap;
     uint64_t ip{ 0 };
     std::vector<StackItem> stack;
@@ -101,7 +113,7 @@ struct Cpu {
 
 struct InstructionInfo {
     InstructionType type;
-    std::string str;
+    const char* const str;
     std::function<bool(Cpu& cpu, const Code& code)> func;
 };
 
@@ -132,9 +144,8 @@ bool Call(Cpu& cpu, const Code& code);
 bool Ret(Cpu& cpu, const Code& code);
 bool Exit(Cpu& cpu, const Code& code);
 
-
 // Do not use MAX as item, just as array size.
-inline std::array<InstructionInfo, static_cast<size_t>(InstructionType::MAX)> instructionInfos = {
+inline const std::array<InstructionInfo, static_cast<size_t>(InstructionType::MAX)> instructionInfos = {
     InstructionInfo{ InstructionType::NIL, "", nullptr },
     InstructionInfo{ InstructionType::ADD, "add", Add },
     InstructionInfo{ InstructionType::SUB, "sub", Sub },

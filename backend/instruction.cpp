@@ -9,11 +9,56 @@
  *
  */
 
-
 #include "instruction.h"
 
+#include <iostream>
+
+void Code::Print() {
+	std::cout << "IRs:" << std::endl; 
+	for (size_t i = 0; i < irs.size(); i++) {
+		std::cout << "\t" << i << ": " << 
+			irs[i].label << "\t" << 
+			instructionInfos[static_cast<size_t>(irs[i].instruction)].str << "\t" << 
+			irs[i].argument << std::endl;
+	}
+
+	std::cout << "Label map:" << std::endl;
+	for (const auto &it : labelMap) {
+		std::cout << "\t" << it.first << ": " << it.second << ",\t";
+	}
+	std::cout << std::endl;
+
+	std::cout << "FuncName map:" << std::endl;
+	for (const auto &it : funcMap) {
+		std::cout << "\t" << it.first << ": " << it.second << ",\t";
+	}
+	std::cout << std::endl;
+
+}
+
+void Cpu::Print() {
+
+	std::cout << "[IP]: " << ip << std::endl;
+
+	std::cout << "Stack:" << std::endl; 
+	for (size_t i = 0; i < stack.size(); i++) {
+		std::cout << "\t" << i << ": " << 
+		statckItemStrMap[stack[i].type] << "\t" <<
+		stack[i].data << std::endl;
+	}
+
+	if (varMap == nullptr) {
+		return;
+	}
+	std::cout << "Var map:" << std::endl;	
+	for (const auto &it : *varMap) {
+		std::cout << "\t" << it.first << ": " << it.second << ",\t";
+	}
+	std::cout << std::endl;
+}
+
 InstructionType GetInstructionType(const std::string& instructionStr) {
-	for (const auto &it : instructionInfos) {
+	for (const auto& it : instructionInfos) {
 		if (it.str == instructionStr) {
 			return it.type;
 		}

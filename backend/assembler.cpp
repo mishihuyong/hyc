@@ -23,10 +23,6 @@ const constexpr char *ARG_STR = ".arg";
 const constexpr char *VAR_STR = ".var";
 constexpr size_t ARG_VAR_STR_SIZE = 4;
 
-
-
-
-
 bool Assembler::Assemble(const std::string& filePath, bool doMain, bool doExit) {
     std::ifstream file{ filePath };
     if (!file) {
@@ -60,7 +56,7 @@ bool Assembler::Assemble(const std::string& filePath, bool doMain, bool doExit) 
             // concat all label, because of the label hasing same ip
             label = label.empty() ? currentLabel : label + "," + currentLabel;
             if (instAndArg.empty() || instAndArg[0] == ';' || instAndArg[0] == '#') {
-                // Ignore empty string and comment
+                // Ignore empty string and comment and to process label if concat
                 continue;
             }
         } else if (label.size() >= ENDFUNC_STR_SIZE && label.substr(0, ENDFUNC_STR_SIZE) == ENDFUNC_STR) {
@@ -88,10 +84,10 @@ bool Assembler::Assemble(const std::string& filePath, bool doMain, bool doExit) 
 
         InstructionType instructionType;
         instructionType = GetInstructionType(instructionStr);
-        if (instructionType != InstructionType::NIL && instructionType != InstructionType::MAX) {
+        if (instructionType != InstructionType::NIL && instructionType == InstructionType::MAX) {
             code_.irs.push_back({ label, instructionType, arg });
         }
-
+        
         label = "";
     }
     
@@ -124,7 +120,6 @@ bool Assembler::CheckLabel(const std::string& label) {
             code_.labelMap[label] = code_.irs.size();
         }
     }
-
 
     return true;
 }
