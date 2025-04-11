@@ -12,6 +12,7 @@
 #ifndef INSTRUCTION_H
 #define INSTRUCTION_H
 
+#include <functional>
 #include <string>
 #include <vector>
 #include <map>
@@ -48,41 +49,6 @@ enum class InstructionType : int {
     MAX
 };
 
-struct InstructionInfo {
-    InstructionType type;
-    std::string_view str;
-};
-
-inline std::array<InstructionInfo, static_cast<size_t>(InstructionType::MAX)> instructionInfos = {
-    InstructionInfo{ InstructionType::NIL, "" },
-    InstructionInfo{ InstructionType::ADD, "add" },
-    InstructionInfo{ InstructionType::SUB, "sub" },
-    InstructionInfo{ InstructionType::MUL, "mul" },
-    InstructionInfo{ InstructionType::DIV, "div" },
-    InstructionInfo{ InstructionType::MOD, "mod" },
-    InstructionInfo{ InstructionType::NEG, "neg" },
-    InstructionInfo{ InstructionType::NOT, "not" },
-    InstructionInfo{ InstructionType::AND, "and" },
-    InstructionInfo{ InstructionType::OR, "or" },
-    InstructionInfo{ InstructionType::BITAND, "bitand" },
-    InstructionInfo{ InstructionType::BITOR, "bitor" },
-    InstructionInfo{ InstructionType::BITXOR, "bitxor" },
-    InstructionInfo{ InstructionType::CMPEQ, "cmpeq" },
-    InstructionInfo{ InstructionType::CMPNE, "cmpne" },
-    InstructionInfo{ InstructionType::CMPGT, "cmpgt" },
-    InstructionInfo{ InstructionType::CMPLT, "cmplt" },
-    InstructionInfo{ InstructionType::CMPGE, "cmpge" },
-    InstructionInfo{ InstructionType::CMPLE, "cmple" },
-    InstructionInfo{ InstructionType::PUSH, "push" },
-    InstructionInfo{ InstructionType::POP, "pop" },
-    InstructionInfo{ InstructionType::JMP, "jmp" },
-    InstructionInfo{ InstructionType::JZ, "jz" },
-    InstructionInfo{ InstructionType::VAR, "var" },
-    InstructionInfo{ InstructionType::CALL, "call" },
-    InstructionInfo{ InstructionType::RET, "ret" },
-    InstructionInfo{ InstructionType::EXIT, "exit" },
-};
-
 struct Ir {
     std::string label;
     InstructionType instruction;
@@ -92,6 +58,11 @@ struct Ir {
 using var = long long;
 
 struct Code {
+    void Clear() {
+        irs.clear();
+        labelMap.clear();
+        funcMap.clear();
+    }
     std::vector<Ir> irs;
     std::map<std::string, var> labelMap;
     std::map<std::string, var> funcMap;
@@ -125,11 +96,76 @@ struct Cpu {
 
     std::map<std::string, var>* varMap;
     uint64_t ip{ 0 };
-    std::vector<var> stack;
+    std::vector<StackItem> stack;
 };
 
-inline bool IsId(const std::string_view& str) {
-    return true;
-}
+struct InstructionInfo {
+    InstructionType type;
+    std::string str;
+    std::function<bool(Cpu& cpu, const Code& code)> func;
+};
+
+bool Add(Cpu& cpu, const Code& code);
+bool Sub(Cpu& cpu, const Code& code);
+bool Mul(Cpu& cpu, const Code& code);
+bool Div(Cpu& cpu, const Code& code);
+bool Mod(Cpu& cpu, const Code& code);
+bool Neg(Cpu& cpu, const Code& code);
+bool Not(Cpu& cpu, const Code& code);
+bool And(Cpu& cpu, const Code& code);
+bool Or(Cpu& cpu, const Code& code);
+bool BitAnd(Cpu& cpu, const Code& code);
+bool BitOr(Cpu& cpu, const Code& code);
+bool BitXor(Cpu& cpu, const Code& code);
+bool CmpEq(Cpu& cpu, const Code& code);
+bool CmpNe(Cpu& cpu, const Code& code);
+bool CmpGt(Cpu& cpu, const Code& code);
+bool CmpLt(Cpu& cpu, const Code& code);
+bool CmpGe(Cpu& cpu, const Code& code);
+bool CmpLe(Cpu& cpu, const Code& code);
+bool Push(Cpu& cpu, const Code& code);
+bool Pop(Cpu& cpu, const Code& code);
+bool Jmp(Cpu& cpu, const Code& code);
+bool Jz(Cpu& cpu, const Code& code);
+bool Var(Cpu& cpu, const Code& code);
+bool Call(Cpu& cpu, const Code& code);
+bool Ret(Cpu& cpu, const Code& code);
+bool Exit(Cpu& cpu, const Code& code);
+
+
+// Do not use MAX as item, just as array size.
+inline std::array<InstructionInfo, static_cast<size_t>(InstructionType::MAX)> instructionInfos = {
+    InstructionInfo{ InstructionType::NIL, "", nullptr },
+    InstructionInfo{ InstructionType::ADD, "add", Add },
+    InstructionInfo{ InstructionType::SUB, "sub", Sub },
+    InstructionInfo{ InstructionType::MUL, "mul", Mul },
+    InstructionInfo{ InstructionType::DIV, "div", Div },
+    InstructionInfo{ InstructionType::MOD, "mod", Mod },
+    InstructionInfo{ InstructionType::NEG, "neg", Neg },
+    InstructionInfo{ InstructionType::NOT, "not", Not },
+    InstructionInfo{ InstructionType::AND, "and", And },
+    InstructionInfo{ InstructionType::OR, "or", Or },
+    InstructionInfo{ InstructionType::BITAND, "bitand", BitAnd },
+    InstructionInfo{ InstructionType::BITOR, "bitor", BitOr },
+    InstructionInfo{ InstructionType::BITXOR, "bitxor", BitXor },
+    InstructionInfo{ InstructionType::CMPEQ, "cmpeq", CmpEq },
+    InstructionInfo{ InstructionType::CMPNE, "cmpne", CmpNe },
+    InstructionInfo{ InstructionType::CMPGT, "cmpgt", CmpGt },
+    InstructionInfo{ InstructionType::CMPLT, "cmplt", CmpLt },
+    InstructionInfo{ InstructionType::CMPGE, "cmpge", CmpGe},
+    InstructionInfo{ InstructionType::CMPLE, "cmple", CmpLe },
+    InstructionInfo{ InstructionType::PUSH, "push", Push },
+    InstructionInfo{ InstructionType::POP, "pop", Pop },
+    InstructionInfo{ InstructionType::JMP, "jmp", Jmp },
+    InstructionInfo{ InstructionType::JZ, "jz", Jz },
+    InstructionInfo{ InstructionType::VAR, "var", Var },
+    InstructionInfo{ InstructionType::CALL, "call", Call },
+    InstructionInfo{ InstructionType::RET, "ret", Ret },
+    InstructionInfo{ InstructionType::EXIT, "exit", Exit }
+};
+
+InstructionType GetInstructionType(const std::string& instructionStr);
+
+bool IsIdentifier(const std::string& ident);
 
 #endif

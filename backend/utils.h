@@ -13,17 +13,24 @@
 #define UTILS_H
 
 #include <string>
-#include <string_view>
 #include <vector>
+#include <algorithm>
+#include <cctype>
 
-std::string_view TrimView(std::string_view s, const char* t = " \t\n\r\f\v");
+namespace Utils {
+
+// std::string_view TrimView(std::string_view s, const char* t = " \t\n\r\f\v");
+
+std::string Trim(std::string str);
 
 void FastTrim(std::string& s);
 
-bool Partition(const std::string_view& str, const std::string_view& delimiter,
-    std::string_view& first, std::string_view& second);
+bool Partition(const std::string& str, const std::string& delimiter,
+    std::string& first, std::string& second);
 
-void Splite(const std::string_view& str, const std::string_view& delimiter, 
-    std::vector<std::string_view>& tokens);
+void Splite(const std::string& str, const std::string& delimiter, 
+    std::vector<std::string>& tokens);
+
+} // namespace Utils
 
 #endif

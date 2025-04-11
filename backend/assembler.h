@@ -16,13 +16,22 @@
 
 class Assembler {
 public:
-    bool Assemble(const std::string& filePath, bool hasMain);
+    bool Assemble(const std::string& filePath, bool doMain = true, bool doExit = false);
+
+    inline void Reset() {
+        Clear();
+    }
+
+    inline void Clear() {
+        code_.Clear();
+    }
+
     inline const Code& GetCode() {
         return code_;
     }
 
 private:
-    bool CheckLabel(const std::string_view& label);
+    bool CheckLabel(const std::string& label);
     Code code_;
 };
 

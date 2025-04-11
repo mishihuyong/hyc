@@ -5,7 +5,8 @@ cmake_minimum_required (VERSION 3.8)
 add_executable (hycsim 
 	"utils.cpp" 
 	"utils.h" 
-	"instruction.h" 
+	"instruction.h"
+	"instruction.cpp" 
 	"assembler.cpp" 
 	"assembler.h" 
 	"executor.cpp" 
