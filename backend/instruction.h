@@ -42,6 +42,7 @@ enum class InstructionType : int {
     POP,
     JMP,
     JZ,
+    ARG,
     VAR,
     CALL,
     RET,
@@ -71,9 +72,9 @@ struct Code {
 };
 
 enum class StackItemType : int {
-    CONST,
+    CONST = 0,
     VAR,
-    PARAM_SIZE,
+    ARG_SIZE,
     IP,
     VAR_MAP
 };
@@ -81,7 +82,7 @@ enum class StackItemType : int {
 inline std::map<StackItemType, const char* const> statckItemStrMap = {
     { StackItemType::CONST, "CONST" },
     { StackItemType::VAR, "VAR" },
-    { StackItemType::PARAM_SIZE, "PARM_SIZE" },
+    { StackItemType::ARG_SIZE, "ARG_SIZE" },
     { StackItemType::IP, "IP" },
     { StackItemType::VAR_MAP, "VAR_MAP" }
 };
@@ -169,6 +170,7 @@ inline const std::array<InstructionInfo, static_cast<size_t>(InstructionType::MA
     InstructionInfo{ InstructionType::POP, "pop", Pop },
     InstructionInfo{ InstructionType::JMP, "jmp", Jmp },
     InstructionInfo{ InstructionType::JZ, "jz", Jz },
+    InstructionInfo{ InstructionType::ARG, "arg", nullptr },
     InstructionInfo{ InstructionType::VAR, "var", Var },
     InstructionInfo{ InstructionType::CALL, "call", Call },
     InstructionInfo{ InstructionType::RET, "ret", Ret },

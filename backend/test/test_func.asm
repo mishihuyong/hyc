@@ -1,5 +1,5 @@
 FUNC @main:
-var a, b, c, d
+main.var a, b, c, d
 
 push 2
 pop c
@@ -33,9 +33,9 @@ ret ~
 ENDFUNC
 
 FUNC @sum:
-arg a, b
+sum.arg a, b
 
-var c, d
+sum.var c, d
 
 push a
 push b

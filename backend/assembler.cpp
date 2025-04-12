@@ -32,22 +32,27 @@ bool Assembler::Assemble(const std::string& filePath, bool doMain, bool doExit) 
 
     if (doMain) {
         // use main if has main
-        code_.irs.push_back({"", InstructionType::CALL, "main"});
+        code_.irs.push_back({ "", InstructionType::CALL, "main" });
     }
     if (doExit) {
         // use exit if need exiting process
-        code_.irs.push_back({"", InstructionType::EXIT, "~"});
+        code_.irs.push_back({ "", InstructionType::EXIT, "~" });
     }
     
     std::string label;
     std::string line;
     while (std::getline(file, line)) {
         std::string strippedLine = Utils::Trim(line);
+        if (strippedLine.empty() || strippedLine[0] == ';' || strippedLine[0] == '#') {
+            continue;
+        }
 
         std::string currentLabel;
         std::string instAndArg;
         bool sep = Utils::Partition(strippedLine, ":", currentLabel, instAndArg);
-        if (sep && currentLabel.find("\"") != std::string::npos && currentLabel.find("'") != std::string::npos) {
+        if (sep && 
+            currentLabel.find("\"") == std::string::npos && 
+            currentLabel.find("'") == std::string::npos) {
             // Process label of not ENDFUNC 
             if (!CheckLabel(currentLabel)) {
                 std::cerr << "[err]: Wrong label: " << label << std::endl;
@@ -59,7 +64,8 @@ bool Assembler::Assemble(const std::string& filePath, bool doMain, bool doExit) 
                 // Ignore empty string and comment and to process label if concat
                 continue;
             }
-        } else if (label.size() >= ENDFUNC_STR_SIZE && label.substr(0, ENDFUNC_STR_SIZE) == ENDFUNC_STR) {
+        } else if (strippedLine.size() >= ENDFUNC_STR_SIZE && 
+            strippedLine.substr(0, ENDFUNC_STR_SIZE) == ENDFUNC_STR) {
             // Process label of ENDFUNC
             // concat all label, because of  the label hasing same ip
             label = label.empty() ? ENDFUNC_STR : label + "," + ENDFUNC_STR;
@@ -70,22 +76,22 @@ bool Assembler::Assemble(const std::string& filePath, bool doMain, bool doExit) 
             instAndArg = strippedLine;
         }
 
-        std::string instructionStr;
+        std::string instStr;
         std::string arg;
-        sep = Utils::Partition(instAndArg, " ", instructionStr, arg);
+        sep = Utils::Partition(instAndArg, " ", instStr, arg);
         // > ARG_VAR_STR_SIZE, because of  funcName.arg or funcName.var
-        if (instructionStr.size() > ARG_VAR_STR_SIZE &&
-            (instructionStr.substr(instructionStr.size() - ARG_VAR_STR_SIZE, ARG_VAR_STR_SIZE) == ARG_STR ||
-                instructionStr.substr(instructionStr.size() - ARG_VAR_STR_SIZE, ARG_VAR_STR_SIZE) == VAR_STR)) {
+        if (instStr.size() > ARG_VAR_STR_SIZE &&
+            (instStr.substr(instStr.size() - ARG_VAR_STR_SIZE, ARG_VAR_STR_SIZE) == ARG_STR ||
+            instStr.substr(instStr.size() - ARG_VAR_STR_SIZE, ARG_VAR_STR_SIZE) == VAR_STR)) {
             // .arg to arg  .var to var        
-            instructionStr = instructionStr.substr(instructionStr.size() - ARG_VAR_STR_SIZE + 1, ARG_VAR_STR_SIZE);
+            instStr = instStr.substr(instStr.size() - ARG_VAR_STR_SIZE + 1, ARG_VAR_STR_SIZE);
             
         }
 
-        InstructionType instructionType;
-        instructionType = GetInstructionType(instructionStr);
-        if (instructionType != InstructionType::NIL && instructionType == InstructionType::MAX) {
-            code_.irs.push_back({ label, instructionType, arg });
+        InstructionType instType;
+        instType = GetInstructionType(instStr);
+        if (instType != InstructionType::NIL && instType != InstructionType::MAX) {
+            code_.irs.push_back({ label, instType, arg });
         }
         
         label = "";

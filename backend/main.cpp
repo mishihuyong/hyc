@@ -21,6 +21,7 @@ bool Sim(const std::string& cfile) {
 		return false;
 	}
 	auto code = asmer.GetCode();
+	code.Print();
 
 	Executor executor;
 	var ret;
@@ -39,14 +40,17 @@ void test_epxr() {
 }
 
 void test_func() {
-	if (!Sim("/mnt/d/work/prj/hyc/backend/test/test_func.asm")) {
+	std::string path;
+	// path = "/mnt/d/work/prj/hyc/backend/test/test_func.asm";
+	path = "d:/work/prj/hyc/backend/test/test_func.asm";
+	if (!Sim(path)) {
 		//static_assert(false);
 	}
 	static_assert(true);
 }
 
 int main() {
-	test_epxr();
+	//test_epxr();
 	test_func();
 	return 0;
 }
