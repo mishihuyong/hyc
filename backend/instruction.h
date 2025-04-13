@@ -97,11 +97,16 @@ struct StackItem {
 struct Cpu {
     Cpu() : varMap{ new std::map<const std::string, var> } {
     }
+    ~Cpu() {
+        Clear();
+        if (varMap != nullptr) {
+            delete varMap;
+        }
+    }
 
     inline void Clear() {
         if (varMap != nullptr) {
-            delete varMap;
-            varMap = nullptr;
+            varMap->clear();
         }
         ip = 0;
         stack.clear();

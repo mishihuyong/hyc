@@ -105,7 +105,7 @@ bool Add(Cpu& cpu, const Code& code) {
 	}
 
 	left.data += right.data;
-
+	cpu.stack.pop_back();
 	return true;
 }
 
@@ -124,6 +124,7 @@ bool Sub(Cpu& cpu, const Code& code) {
 	}
 
 	left.data -= right.data;
+	cpu.stack.pop_back();
 	return true;
 }
 
