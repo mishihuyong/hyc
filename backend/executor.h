@@ -19,7 +19,9 @@
 class Executor {
 public:
     bool Run(const Code& code, var& ret);
-
+    inline var GetExit() const {
+        return cpu_.exitCode;
+    }
 
     //static bool Add(Cpu& cpu, const Code& code);
     //static bool Sub(Cpu& cpu, const Code& code);

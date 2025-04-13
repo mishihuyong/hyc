@@ -12,11 +12,11 @@
 #ifndef INSTRUCTION_H
 #define INSTRUCTION_H
 
+#include <array>
 #include <functional>
 #include <string>
-#include <vector>
 #include <map>
-#include <array>
+#include <vector>
 
 enum class InstructionType : int {
     NIL = 0x0,
@@ -67,12 +67,13 @@ struct Code {
 
     void Print();
     std::vector<IntermediateRepresentation> irs;
-    std::map<std::string, var> labelMap;
-    std::map<std::string, var> funcMap;
+    std::map<const std::string, uint64_t> labelMap;
+    std::map<const std::string, uint64_t> funcMap;
 };
 
 enum class StackItemType : int {
-    CONST = 0,
+    UNINIT = 0,
+    CONST,
     VAR,
     ARG_SIZE,
     IP,
@@ -80,6 +81,7 @@ enum class StackItemType : int {
 };
 
 inline std::map<StackItemType, const char* const> statckItemStrMap = {
+    { StackItemType::UNINIT, "UNINIT" },
     { StackItemType::CONST, "CONST" },
     { StackItemType::VAR, "VAR" },
     { StackItemType::ARG_SIZE, "ARG_SIZE" },
@@ -93,7 +95,7 @@ struct StackItem {
 };
 
 struct Cpu {
-    Cpu() : varMap{ new std::map<std::string, var> } {
+    Cpu() : varMap{ new std::map<const std::string, var> } {
     }
 
     inline void Clear() {
@@ -103,13 +105,15 @@ struct Cpu {
         }
         ip = 0;
         stack.clear();
+        exitCode = 0LL;
     }
 
     void Print();
 
-    std::map<std::string, var>* varMap;
-    uint64_t ip{ 0 };
+    std::map<const std::string, var>* varMap;
+    uint64_t ip{ 0ULL };
     std::vector<StackItem> stack;
+    var exitCode{ 0LL };
 };
 
 struct InstructionInfo {

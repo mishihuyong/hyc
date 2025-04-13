@@ -11,7 +11,38 @@
 
 #include "executor.h"
 
+#include <iostream>
+
 bool Executor::Run(const Code& code, var& ret) {
+	cpu_.Clear();
+	while (cpu_.ip < code.irs.size()) {
+		InstructionType instType = code.irs[cpu_.ip].instruction;
+		if (instType == InstructionType::NIL || instType == InstructionType::MAX) {
+			std::cerr << "[err]: Instruction is error." << std::endl;
+			return false;
+		}
+		auto& funcName = instructionInfos[static_cast<size_t>(instType)].str;
+		auto& func = instructionInfos[static_cast<size_t>(instType)].func;
+		
+		if (func == nullptr) {
+			// arg is null
+			continue;
+		}
+		std::cout << "********prev********" << std::endl;
+		cpu_.Print();
+
+		if (!func(cpu_, code)) {
+			std::cerr << "[err]: Exec " << code.irs[cpu_.ip].label << " " << funcName << " " <<
+				code.irs[cpu_.ip].argument << "failed." << std::endl;
+			return false;
+		}
+
+		std::cout << "********post********" << std::endl;
+		cpu_.Print();
+
+		cpu_.ip += 1;
+	}
+
 	return true;
 }
 

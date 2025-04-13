@@ -12,10 +12,10 @@
 #ifndef UTILS_H
 #define UTILS_H
 
-#include <string>
-#include <vector>
 #include <algorithm>
 #include <cctype>
+#include <string>
+#include <vector>
 
 namespace Utils {
 
@@ -28,7 +28,7 @@ void FastTrim(std::string& s);
 bool Partition(const std::string& str, const std::string& delimiter,
     std::string& first, std::string& second);
 
-void Splite(const std::string& str, const std::string& delimiter, 
+void Split(const std::string& str, const std::string& delimiter, 
     std::vector<std::string>& tokens);
 
 } // namespace Utils

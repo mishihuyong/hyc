@@ -29,6 +29,8 @@ bool Sim(const std::string& cfile) {
 		std::cerr << "[err]: Execute " << cfile << " failed" << std::endl;
 		return false;
 	}
+	var exit_code = executor.GetExit();
+	std::cout << "**********[exit]: " << exit_code << std::endl;
 	return true;
 }
 

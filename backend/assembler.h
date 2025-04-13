@@ -26,7 +26,7 @@ public:
         code_.Clear();
     }
 
-    inline const Code& GetCode() {
+    inline const Code& GetCode() const {
         return code_;
     }
 

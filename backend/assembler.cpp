@@ -85,7 +85,6 @@ bool Assembler::Assemble(const std::string& filePath, bool doMain, bool doExit) 
             instStr.substr(instStr.size() - ARG_VAR_STR_SIZE, ARG_VAR_STR_SIZE) == VAR_STR)) {
             // .arg to arg  .var to var        
             instStr = instStr.substr(instStr.size() - ARG_VAR_STR_SIZE + 1, ARG_VAR_STR_SIZE);
-            
         }
 
         InstructionType instType;
