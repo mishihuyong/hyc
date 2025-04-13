@@ -118,6 +118,7 @@ struct Cpu {
     std::map<const std::string, var>* varMap;
     uint64_t ip{ 0ULL };
     std::vector<StackItem> stack;
+    bool exit{ false };
     var exitCode{ 0LL };
 };
 

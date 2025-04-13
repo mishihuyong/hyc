@@ -15,7 +15,7 @@
 
 bool Executor::Run(const Code& code, var& ret) {
 	cpu_.Clear();
-	while (cpu_.ip < code.irs.size()) {
+	while (!cpu_.exit && cpu_.ip < code.irs.size()) {
 		InstructionType instType = code.irs[cpu_.ip].instruction;
 		if (instType == InstructionType::NIL || instType == InstructionType::MAX) {
 			std::cerr << "[err]: Instruction is error." << std::endl;

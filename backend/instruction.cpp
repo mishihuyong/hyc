@@ -750,6 +750,7 @@ bool Exit(Cpu& cpu, const Code& code) {
 
 	cpu.exitCode = ret_si.data;
 	std::cout << "[EXIT]: " << cpu.exitCode << std::endl;
-	exit(cpu.exitCode); // if not exit, dead cycle
+	cpu.exit = true;
+	// exit(cpu.exitCode); // if not exit, dead cycle
 	return true;
 }
