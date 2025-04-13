@@ -24,17 +24,14 @@ bool Executor::Run(const Code& code, var& ret) {
 		auto& funcName = instructionInfos[static_cast<size_t>(instType)].str;
 		auto& func = instructionInfos[static_cast<size_t>(instType)].func;
 		
-		if (func == nullptr) {
-			// arg is null
-			continue;
-		}
 		std::cout << "********prev********" << std::endl;
 		cpu_.Print();
 
 		std::cout << "********run:" << code.irs[cpu_.ip].label << "\t" <<
 			funcName << "\t" << code.irs[cpu_.ip].argument << std::endl;
 
-		if (!func(cpu_, code)) {
+		// instruction arg's func is null
+		if (func != nullptr && !func(cpu_, code)) {
 			std::cerr << "[err]: Exec " << code.irs[cpu_.ip].label << " " << funcName << " " <<
 				code.irs[cpu_.ip].argument << " failed." << std::endl;
 			return false;

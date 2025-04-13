@@ -1,3 +1,22 @@
+;int main() {
+;    int a, b, c, d
+
+;    c = 2;
+;    d = c * 2;
+
+;    a = sum(c, d);
+;    b = sum(a, d);
+;    print("c = %d, d = %d", c, d);
+;    print("a = sum(c, d) = %d, b = sum(a, d) = %d", a, b);
+
+;    return b;
+;}
+
+;int sum(int m, int n) {
+;    int c1, d1;
+;    return a + b;
+;}
+
 FUNC @main:
 main.var a, b, c, d
 
@@ -19,26 +38,26 @@ push d
 call sum
 pop b
 
-push c
-push d
+;push c
+;push d
 ;print "c = %d, d = %d"
 
-push a
-push b
+;push a
+;push b
 ;print "a = sum(c, d) = %d, b = sum(a, d) = %d"
 
-push 0
+push b
 ret ~
 
 ENDFUNC
 
 FUNC @sum:
-sum.arg a, b
+sum.arg m, n
 
-sum.var c, d
+sum.var c1, d1
 
-push a
-push b
+push m
+push n
 add
 ret ~
 

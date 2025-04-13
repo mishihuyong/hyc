@@ -71,6 +71,7 @@ bool Assembler::Assemble(const std::string& filePath, bool doMain, bool doExit) 
             label = label.empty() ? ENDFUNC_STR : label + "," + ENDFUNC_STR;
 
             // add ret instruction
+            // but beacause of prev instruction is ret ~, so the "ret" has not been executed
             instAndArg = instructionInfos[static_cast<size_t>(InstructionType::RET)].str;
         } else {
             instAndArg = strippedLine;

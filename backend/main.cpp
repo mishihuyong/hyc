@@ -14,9 +14,9 @@
 #include "assembler.h"
 #include "executor.h"
 
-bool Sim(const std::string& cfile, bool do_main) {
+bool Sim(const std::string& cfile, bool do_main, bool do_exit) {
 	Assembler asmer;
-	if (!asmer.Assemble(cfile, do_main)) {
+	if (!asmer.Assemble(cfile, do_main, do_exit)) {
 		std::cerr << "[err]: Assemble " << cfile << " failed" << std::endl;
 		return false;
 	}
@@ -38,7 +38,7 @@ void test_epxr() {
 	std::string path;
 	// path = "/mnt/d/work/prj/hyc/backend/test/test_expr.asm";
 	path = "d:/work/prj/hyc/backend/test/test_expr.asm";
-	if (!Sim(path, false)) {
+	if (!Sim(path, false, false)) {
 		//static_assert(false);
 	}
 	static_assert(true);
@@ -48,14 +48,14 @@ void test_func() {
 	std::string path;
 	// path = "/mnt/d/work/prj/hyc/backend/test/test_func.asm";
 	path = "d:/work/prj/hyc/backend/test/test_func.asm";
-	if (!Sim(path, true)) {
+	if (!Sim(path, true, true)) {
 		//static_assert(false);
 	}
 	static_assert(true);
 }
 
 int main() {
-	test_epxr();
+	//test_epxr();
 	test_func();
 	return 0;
 }

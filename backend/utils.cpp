@@ -67,7 +67,7 @@ void Split(const std::string& str, const std::string& delimiter,
         end = str.find(delimiter, start);
     }
     
-    tokens.emplace_back(str.substr(start));
+    tokens.emplace_back(Trim(str.substr(start)));
 }
 
 } // namespace Utils

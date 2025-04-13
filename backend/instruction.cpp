@@ -52,7 +52,7 @@ void Cpu::Print() {
 	if (varMap == nullptr) {
 		return;
 	}
-	std::cout << "Var map:" << std::endl;	
+	std::cout << "Var map: " << reinterpret_cast<uint64_t>(varMap) << std::endl;	
 	for (const auto &it : *varMap) {
 		std::cout << "\t" << it.first << ": " << it.second << ",\t";
 	}
@@ -607,8 +607,11 @@ bool Call(Cpu& cpu, const Code& code) {
 	// set callee's info
 	cpu.varMap = new_var_map;
 
-	cpu.ip = callee_ip - 1; // arg's func is null, will continue. so all func can be  new_ip - 1
+	// 由于 arg指令的函数为空，所以 这里-1 和不-1 效果是一样的。-1后空run一圈 啥也不做，只是ip+1
+	//cpu.ip = args.size() > 0 ? callee_ip : callee_ip - 1;
 
+	cpu.ip = callee_ip - 1; // arg's func is null, will continue. so all func can be  new_ip - 1
+	
 	return true;
 }
 
@@ -671,7 +674,7 @@ bool Ret(Cpu& cpu, const Code& code) {
 	StackItem ret_si{ StackItemType::UNINIT, 0ll };
 	if (arg.empty()) {
 	} else if (arg == "~") {
-		const auto& ret_si = cpu.stack.back();
+		ret_si = cpu.stack.back();
 	} else {
 		try {
 			// CONST
@@ -698,10 +701,10 @@ bool Ret(Cpu& cpu, const Code& code) {
 		return false;
 	}
 
-	if (ret_si.type != StackItemType::CONST) {
-		std::cerr << "[err]: Ret: Undefined variable " << arg << std::endl;
-		return false;
-	}
+	//if (ret_si.type != StackItemType::CONST) {
+	//	std::cerr << "[err]: Ret: Undefined variable " << arg << std::endl;
+	//	return false;
+	//}
 
 	cpu.stack.push_back(ret_si);
 
@@ -717,7 +720,7 @@ bool Exit(Cpu& cpu, const Code& code) {
 	StackItem ret_si{ StackItemType::UNINIT, 0ll };
 	if (arg.empty()) {
 	} else if (arg == "~") {
-		const auto& ret_si = cpu.stack.back();
+		ret_si = cpu.stack.back();
 	} else {
 		try {
 			// CONST
@@ -740,11 +743,13 @@ bool Exit(Cpu& cpu, const Code& code) {
 		}
 	}
 
-	if (ret_si.type != StackItemType::CONST) {
-		std::cerr << "[err]: Ret: Undefined variable " << arg << std::endl;
-		return false;
-	}
+	//if (ret_si.type != StackItemType::CONST) {
+	//	std::cerr << "[err]: Ret: Undefined variable " << arg << std::endl;
+	//	return false;
+	//}
 
 	cpu.exitCode = ret_si.data;
+	std::cout << "[EXIT]: " << cpu.exitCode << std::endl;
+	exit(cpu.exitCode); // if not exit, dead cycle
 	return true;
 }
