@@ -54,8 +54,30 @@ void test_func() {
 	static_assert(true);
 }
 
+void test_ifelse() {
+	std::string path;
+	// path = "/mnt/d/work/prj/hyc/backend/test/test_ifelse.asm";
+	path = "d:/work/prj/hyc/backend/test/test_ifelse.asm";
+	if (!Sim(path, true, true)) {
+		//static_assert(false);
+	}
+	static_assert(true);
+}
+
+void test_while() {
+	std::string path;
+	// path = "/mnt/d/work/prj/hyc/backend/test/test_while.asm";
+	path = "d:/work/prj/hyc/backend/test/test_while.asm";
+	if (!Sim(path, true, true)) {
+		//static_assert(false);
+	}
+	static_assert(true);
+}
+
 int main() {
 	//test_epxr();
 	test_func();
+	test_ifelse();
+	test_while();
 	return 0;
 }
